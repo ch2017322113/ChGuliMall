@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import cn.pandacoder.gulimall.product.vo.AttrRespVo;
+import cn.pandacoder.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +17,6 @@ import cn.pandacoder.gulimall.product.entity.AttrEntity;
 import cn.pandacoder.gulimall.product.service.AttrService;
 import cn.pandacoder.common.utils.PageUtils;
 import cn.pandacoder.common.utils.R;
-
 
 
 /**
@@ -36,7 +37,7 @@ public class AttrController {
      */
     @RequestMapping("/list")
     //@RequiresPermissions("product:attr:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = attrService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -48,10 +49,10 @@ public class AttrController {
      */
     @RequestMapping("/info/{attrId}")
     //@RequiresPermissions("product:attr:info")
-    public R info(@PathVariable("attrId") Long attrId){
-		AttrEntity attr = attrService.getById(attrId);
-
-        return R.ok().put("attr", attr);
+    public R info(@PathVariable("attrId") Long attrId) {
+//        AttrEntity attr = attrService.getById(attrId);
+        AttrRespVo attrRespVo = attrService.getAttrInfo(attrId);
+        return R.ok().put("attr", attrRespVo);
     }
 
     /**
@@ -59,8 +60,8 @@ public class AttrController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions("product:attr:save")
-    public R save(@RequestBody AttrEntity attr){
-		attrService.save(attr);
+    public R save(@RequestBody AttrVo attr) {
+        attrService.saveAttr(attr);
 
         return R.ok();
     }
@@ -70,8 +71,9 @@ public class AttrController {
      */
     @RequestMapping("/update")
     //@RequiresPermissions("product:attr:update")
-    public R update(@RequestBody AttrEntity attr){
-		attrService.updateById(attr);
+    public R update(@RequestBody AttrVo attr) {
+//        attrService.updateById(attr);
+        attrService.updateByAttr(attr);
 
         return R.ok();
     }
@@ -81,10 +83,22 @@ public class AttrController {
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("product:attr:delete")
-    public R delete(@RequestBody Long[] attrIds){
-		attrService.removeByIds(Arrays.asList(attrIds));
+    public R delete(@RequestBody Long[] attrIds) {
+        attrService.removeByIds(Arrays.asList(attrIds));
 
         return R.ok();
+    }
+
+    @RequestMapping("/{attrType}/list/{catId}")
+    public R baseList(@RequestParam Map<String, Object> params,
+                      @PathVariable("catId") Long catId,
+                      @PathVariable("attrType") String type) {
+
+
+
+            PageUtils page = attrService.queryBaseQuery(params, catId,type);
+
+        return R.ok().put("page", page);
     }
 
 }

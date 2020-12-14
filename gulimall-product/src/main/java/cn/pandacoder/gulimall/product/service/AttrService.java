@@ -1,5 +1,7 @@
 package cn.pandacoder.gulimall.product.service;
 
+import cn.pandacoder.gulimall.product.vo.AttrRespVo;
+import cn.pandacoder.gulimall.product.vo.AttrVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.pandacoder.common.utils.PageUtils;
 import cn.pandacoder.gulimall.product.entity.AttrEntity;
@@ -16,5 +18,15 @@ import java.util.Map;
 public interface AttrService extends IService<AttrEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+
+    void saveAttr(AttrVo attr);
+
+
+    PageUtils queryBaseQuery(Map<String, Object> params, Long catId, String type);
+
+    AttrRespVo getAttrInfo(Long attrId);
+
+    void updateByAttr(AttrVo attr);
 }
 

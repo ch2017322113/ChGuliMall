@@ -2,18 +2,34 @@ package cn.pandacoder.gulimall.product;
 
 import cn.pandacoder.gulimall.product.entity.BrandEntity;
 import cn.pandacoder.gulimall.product.service.BrandService;
+
+import cn.pandacoder.gulimall.product.service.CategoryService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.junit.Test;
+
+
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @SpringBootTest
 class GulimallProductApplicationTests {
 
     @Autowired
     BrandService brandService;
+
+    @Autowired
+    CategoryService categoryService;
+
+    @Test
+    void testGetParentPath(){
+        Long[] categoryPath = categoryService.findCategoryPath(225L);
+        log.info("完整路径：{}", Arrays.toString(categoryPath));
+    }
 
     @Test
     void contextLoads() {
