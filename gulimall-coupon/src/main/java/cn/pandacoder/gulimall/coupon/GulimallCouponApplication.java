@@ -5,9 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
-
+@EnableTransactionManagement
 @EnableDiscoveryClient
 @MapperScan("cn.pandacoder.gulimall.coupon.dao")
 @SpringBootApplication

@@ -1,5 +1,6 @@
 package cn.pandacoder.gulimall.product.service;
 
+import cn.pandacoder.gulimall.product.entity.BrandEntity;
 import cn.pandacoder.gulimall.product.entity.CategoryEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.pandacoder.common.utils.PageUtils;
@@ -29,5 +30,7 @@ public interface CategoryBrandRelationService extends IService<CategoryBrandRela
     void updateCategory(Long catId, String name);
 
     void updateCascadeCategory(Long catId, String name);
+
+    List<BrandEntity> getBrandsByCatId(Long catId);
 }
 

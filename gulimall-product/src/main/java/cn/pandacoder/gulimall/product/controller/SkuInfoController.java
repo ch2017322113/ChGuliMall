@@ -34,15 +34,20 @@ public class SkuInfoController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+/*    @RequestMapping("/listbak")
     //@RequiresPermissions("product:skuinfo:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R listBak(@RequestParam Map<String, Object> params){
         PageUtils page = skuInfoService.queryPage(params);
 
         return R.ok().put("page", page);
+    }*/
+
+    @RequestMapping("/list")
+    public R list(@RequestParam Map<String, Object> params){
+        PageUtils page = skuInfoService.queryPageByCondition(params);
+
+        return R.ok().put("page", page);
     }
-
-
     /**
      * 信息
      */

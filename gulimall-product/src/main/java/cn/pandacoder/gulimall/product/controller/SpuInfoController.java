@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import cn.pandacoder.gulimall.product.vo.SpuSaveVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,15 +35,21 @@ public class SpuInfoController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @RequestMapping("/list_bak")
     //@RequiresPermissions("product:spuinfo:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R listBak(@RequestParam Map<String, Object> params){
         PageUtils page = spuInfoService.queryPage(params);
 
         return R.ok().put("page", page);
     }
 
+    @RequestMapping("/list")
+    //@RequiresPermissions("product:spuinfo:list")
+    public R list(@RequestParam Map<String, Object> params){
+        PageUtils page = spuInfoService.queryPageByCondition(params);
 
+        return R.ok().put("page", page);
+    }
     /**
      * 信息
      */
@@ -59,9 +66,9 @@ public class SpuInfoController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions("product:spuinfo:save")
-    public R save(@RequestBody SpuInfoEntity spuInfo){
-		spuInfoService.save(spuInfo);
-
+    public R save(@RequestBody SpuSaveVo spuInfo){
+//		spuInfoService.save(spuInfo);
+        spuInfoService.saveSpuInfo(spuInfo);
         return R.ok();
     }
 

@@ -34,8 +34,9 @@ public class GuliMallExceptionControllerAdvice {
         return R.error(BizCodeEnum.VALID_EXCEPTION.getCode(), BizCodeEnum.VALID_EXCEPTION.getMsg()).put("data", map);
     }
 
-    @ExceptionHandler(value = Throwable.class)
-    public R handleUnknownException() {
+/*    @ExceptionHandler(value = Throwable.class)
+    public R handleUnknownException(Exception e) {
+        log.error("出现未知异常,异常类型{}, 详细为{}, 原因{}", e.getMessage(), e.getClass(), e.getCause());
         return R.error(BizCodeEnum.UNKNOWN_EXCEPTION.getCode(), BizCodeEnum.UNKNOWN_EXCEPTION.getMsg());
-    }
+    }*/
 }

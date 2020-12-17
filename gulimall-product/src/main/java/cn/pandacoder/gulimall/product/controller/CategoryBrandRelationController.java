@@ -3,8 +3,11 @@ package cn.pandacoder.gulimall.product.controller;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import cn.pandacoder.gulimall.product.entity.BrandEntity;
+import cn.pandacoder.gulimall.product.vo.BrandVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +42,23 @@ public class CategoryBrandRelationController {
         return R.ok().put("page", page);
     }
 
-//    @RequestMapping("/catelog/list")
+
+    @RequestMapping("/brands/list")
+    //@RequiresPermissions("product:categorybrandrelation:list")
+    public R relationBrandsList(@RequestParam(value = "catId", required = true) Long catId) {
+
+        List<BrandEntity> vos = categoryBrandRelationService.getBrandsByCatId(catId);
+        List<BrandVo> brandVoList = vos.stream().map((entity) -> {
+            BrandVo brandVo = new BrandVo();
+            brandVo.setBrandId(entity.getBrandId());
+            brandVo.setBrandName(entity.getName());
+            return brandVo;
+        }).collect(Collectors.toList());
+
+        return R.ok().put("data",brandVoList);
+    }
+
+    //    @RequestMapping("/catelog/list")
     //@RequiresPermissions("product:categorybrandrelation:list")
     @GetMapping("/catelog/list")
     public R listCateLog(@RequestParam("brandId") Long brandId) {
@@ -68,7 +87,6 @@ public class CategoryBrandRelationController {
 
         return R.ok();
     }*/
-
     @RequestMapping("/save")
     //@RequiresPermissions("product:categorybrandrelation:save")
     public R saveDetail(@RequestBody CategoryBrandRelationEntity categoryBrandRelation) {
