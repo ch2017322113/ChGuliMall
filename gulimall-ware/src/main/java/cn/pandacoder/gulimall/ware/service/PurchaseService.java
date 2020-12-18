@@ -1,5 +1,6 @@
 package cn.pandacoder.gulimall.ware.service;
 
+import cn.pandacoder.gulimall.ware.vo.MergeVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.pandacoder.common.utils.PageUtils;
 import cn.pandacoder.gulimall.ware.entity.PurchaseEntity;
@@ -16,5 +17,9 @@ import java.util.Map;
 public interface PurchaseService extends IService<PurchaseEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    PageUtils queryPageUnreceive(Map<String, Object> params);
+
+    void mergePurchase(MergeVo mergeVo);
 }
 

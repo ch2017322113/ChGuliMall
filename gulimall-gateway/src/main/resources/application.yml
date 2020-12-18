@@ -20,11 +20,18 @@ spring:
             - RewritePath=/api/(?<segment>/?.*), /$\{segment}
 
         - id: coupon_route
-            uri: lb://gulimall-coupon
-            predicates:
-              - Path=/api/coupon/**
-            filters:
-              - RewritePath=/api/(?<segment>/?.*), /$\{segment}
+          uri: lb://gulimall-coupon
+          predicates:
+            - Path=/api/coupon/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*), /$\{segment}
+
+        - id: ware_route
+          uri: lb://gulimall-ware
+          predicates:
+            - Path=/api/ware/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*), /$\{segment}
 
         - id: member_route
           uri: lb://gulimall-member

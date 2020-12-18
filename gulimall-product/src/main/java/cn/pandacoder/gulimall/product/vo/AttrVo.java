@@ -49,4 +49,8 @@ public class AttrVo {
      * 分组id
      */
     private Long attrGroupId;
+    /**
+     * 快速展示【是否展示在介绍上；0-否 1-是】，是否可多选
+     */
+    private Integer valueType;
 }
