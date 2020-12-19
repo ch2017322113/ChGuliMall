@@ -1,17 +1,16 @@
 package cn.pandacoder.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import cn.pandacoder.gulimall.product.entity.ProductAttrValueEntity;
+import cn.pandacoder.gulimall.product.service.ProductAttrValueService;
 import cn.pandacoder.gulimall.product.vo.AttrRespVo;
 import cn.pandacoder.gulimall.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cn.pandacoder.gulimall.product.entity.AttrEntity;
 import cn.pandacoder.gulimall.product.service.AttrService;
@@ -32,6 +31,9 @@ public class AttrController {
     @Autowired
     private AttrService attrService;
 
+    @Autowired
+    private ProductAttrValueService productAttrValueService;
+
     /**
      * 列表
      */
@@ -43,6 +45,24 @@ public class AttrController {
         return R.ok().put("page", page);
     }
 
+    /**
+     * @param spuId
+     * @return
+     */
+    //product/attr/base/listforspu/{spuId}
+    @GetMapping("/base/listforspu/{spuId}")
+    public R listForSpu(@PathVariable("spuId") Long spuId) {
+        List<ProductAttrValueEntity> list = productAttrValueService.getSpuInfo(spuId);
+        return R.ok().put("data", list);
+    }
+
+    ///product/attr/update/{spuId}
+    @PostMapping("/update/{spuId}")
+    public R updateSpu(@PathVariable("spuId") Long spuId,
+                       @RequestBody List<ProductAttrValueEntity> entities) {
+        productAttrValueService.updateSpuAttr(spuId,entities);
+        return R.ok();
+    }
 
     /**
      * 信息
@@ -95,8 +115,7 @@ public class AttrController {
                       @PathVariable("attrType") String type) {
 
 
-
-            PageUtils page = attrService.queryBaseQuery(params, catId,type);
+        PageUtils page = attrService.queryBaseQuery(params, catId, type);
 
         return R.ok().put("page", page);
     }
