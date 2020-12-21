@@ -2,6 +2,7 @@ package cn.pandacoder.gulimall.product.service.impl;
 
 import cn.pandacoder.common.to.SkuReductionTo;
 import cn.pandacoder.common.to.SpuBoundTo;
+import cn.pandacoder.common.to.es.SkuEsModel;
 import cn.pandacoder.common.utils.R;
 import cn.pandacoder.gulimall.product.entity.*;
 import cn.pandacoder.gulimall.product.feign.CouponFeignService;
@@ -12,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -54,6 +53,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     CouponFeignService couponFeignService;
+
+    @Autowired
+    BrandService brandService;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -214,6 +219,75 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 wrapper
         );
         return new PageUtils(page);
+    }
+
+    @Override
+    public void up(Long spuId) {
+        //根据spuId获取所有要上架的商品,收集到upProduct中
+        List<SkuEsModel> upProduct = new ArrayList<>();
+
+
+        //根据SpuId查出所有Spu规格属性的attrId
+        List<ProductAttrValueEntity> productAttrValueEntities = productAttrValueService.baseAttrListForSpu(spuId);
+        List<Long> attrIds = productAttrValueEntities.stream().map((attr) -> {
+            return attr.getAttrId();
+        }).collect(Collectors.toList());
+
+        //得到attrId中可检索的Id
+        List<Long> searchAttrIds = attrService.selectSearchAttrIds(attrIds);
+        Set<Long> idSet = new HashSet<>(searchAttrIds);
+
+
+        List<SkuEsModel.Attrs> attrsList = productAttrValueEntities.stream().filter((item) -> {
+            return idSet.contains(item.getAttrId());
+        }).map(attrItem -> {
+            SkuEsModel.Attrs attrs1 = new SkuEsModel.Attrs();
+            BeanUtils.copyProperties(attrItem, attrs1);
+            return attrs1;
+        }).collect(Collectors.toList());
+
+        //获取SpuId下的所有Sku信息
+        List<SkuInfoEntity> skuInfoEntities = skuInfoService.getSkusBySpuId(spuId);
+        skuInfoEntities.stream().map((item) -> {
+            SkuEsModel esModel = new SkuEsModel();
+            BeanUtils.copyProperties(item, esModel);
+            //skuPrice,skuImg,hasStock,hotScore
+            esModel.setSkuPrice(item.getPrice());
+            esModel.setSkuImg(item.getSkuDefaultImg());
+            //TODO 查询ware是否有库存
+//            esModel.setHasStock(false);
+
+            //TODO 热度评分默认为0
+            esModel.setHotScore(0L);
+
+            //TODO 查出品牌和分类名
+            BrandEntity brandEntity = brandService.getById(item.getBrandId());
+            esModel.setBrandId(brandEntity.getBrandId());
+            esModel.setBrandImg(brandEntity.getLogo());
+            esModel.setBrandName(brandEntity.getName());
+
+            CategoryEntity categoryEntity = categoryService.getById(item.getCatalogId());
+            esModel.setCatalogName(categoryEntity.getName());
+            /**
+             *     private String brandName;
+             *     private String brandImg;
+             *     private String catalogName;
+             *
+             *     private List<Attrs> attrs;
+             *
+             *     @Data
+             *     public static class Attrs{
+             *         private Long attrId;
+             *         private String attrName;
+             *         private String attrValue;
+             *     }
+             */
+            esModel.setAttrs(attrsList);
+
+            return esModel;
+        }).collect(Collectors.toList());
+
+        //TODO 发送给es保存数据
     }
 
 
