@@ -2,16 +2,14 @@ package cn.pandacoder.gulimall.ware.controller;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import cn.pandacoder.gulimall.ware.vo.MergeVo;
+import cn.pandacoder.gulimall.ware.vo.PurchaseDoneVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cn.pandacoder.gulimall.ware.entity.PurchaseEntity;
 import cn.pandacoder.gulimall.ware.service.PurchaseService;
@@ -36,11 +34,18 @@ public class PurchaseController {
      * 列表
      */
     @RequestMapping("/list")
-    //@RequiresPermissions("ware:purchase:list")
     public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = purchaseService.queryPage(params);
 
         return R.ok().put("page", page);
+    }
+
+
+    @RequestMapping("/done")
+    public R finished(@RequestBody PurchaseDoneVo purchaseDoneVo) {
+        purchaseService.done(purchaseDoneVo);
+
+        return R.ok();
     }
 
     @RequestMapping("/unreceive/list")
@@ -55,6 +60,18 @@ public class PurchaseController {
     @RequestMapping("/merge")
     public R merge(@RequestBody MergeVo mergeVo) {
         purchaseService.mergePurchase(mergeVo);
+
+        return R.ok();
+    }
+
+    /**
+     * 领取采购单
+     * /ware/purchase/received
+     */
+
+    @PostMapping("/received")
+    public R received(@RequestBody List<Long> purchaseDetailIds) {
+        purchaseService.received(purchaseDetailIds);
 
         return R.ok();
     }
